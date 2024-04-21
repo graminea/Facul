@@ -4,8 +4,8 @@ from Login_e_Operacoes import Login_e_Operacoes, Operacoes
 from Marcas import Carro, Marca, Ford, Chevrolet, Renault, Peugeot, Honda, Nissan, BMW, Citroen, Fiat
 from utilidades import countdown
 
-
-
+for l in range(0):
+    continue
 
 def menu_principal(login_e_operacoes_obj,marcas):
     while True:

@@ -6,8 +6,6 @@ class Login_e_Operacoes:
     def __init__(self):
         self.logins = []  
         self.usuarioslist = []
-        self.selfcarros = []
-        self.operacoes = {'movimetações': 0, 'ganho': 0, 'total': 0}
         self.oloco = 1  
         self.index_usuario_logado = None
 
@@ -15,30 +13,38 @@ class Login_e_Operacoes:
 
     def fazer_login(self):
         while self.oloco == 1:
-            print('Bem Vindo a Sagás automóveis')
+            print('\nBem Vindo a Sagás automóveis')
             h = input('Você tem cadastro na loja? (S/N): ').upper()
             if h == 'S':
-                print('LOGIN')
-                usuario = input('Digite o usuário: ')
+                print('LOGIN.', end='')
+                for i in range(2):
+                    print('.', end='', flush=True)
+                    countdown(1)
+                
+                usuario = input('\nDigite o usuário: ')
                 senha = input('Digite a senha: ')
                 for i in range(len(self.logins)):
                     if self.logins[i]['usuario'] == usuario and self.logins[i]['senha'] == senha:
                         self.usuario_logado = usuario
                         self.index_usuario_logado = i  
                         self.oloco = 0
+                        print('Login efetuado com sucesso!!')
+                        print('Entrando.', end='')
+                        for i in range(2):
+                            print('.', end='', flush=True)
+                            countdown(1)
+                        print()
                         break
                 else:
                     print('Usuário ou senha incorretos!!')
                     print('Faça o login novamente!!')
+                    print()
                     continue
 
             else:
                 x = input('Deseja fazer o cadastro? (S/N): ').upper()
                 if x == 'S':
                     self.loginscriar()
-                print('REDIRECIONAnDO PARA PAGINA INICIAL')
-                if x == 'S':
-                    print('Para sua segurança, faça o login novamente')
 
     def loginscriar(self):
         usuario = input('Crie um usuário: ')
@@ -46,17 +52,23 @@ class Login_e_Operacoes:
         self.logins.append({'usuario': usuario, 'senha': senha, 'saldo': 0})
         self.usuarioslist.append(usuario)
         print('Usuário criado com sucesso!')
-        print('Realize o login para continuar.')
-        print('salvando os logins')
-        self.salvar_logins('logins.json')
+        print('Realize o login para continuar.', end='')
+        for _ in range(2):
+            print('.', end='', flush=True)
+            countdown(1)
 
+        self.salvar_logins('logins.json')
+        print()
+        
     def adcsaldo(self):
+        print()
         if self.usuario_logado is None:
             print('Você precisa estar logado para adicionar saldo.')
             return
 
         valor = float(input('Qual valor deseja adicionar?: '))
-        countdown(4)
+        countdown(2)
+        print()
         print('Escolha a forma de pagamento:')
         print('1. Cartão de crédito')
         print('2. PIX')
@@ -71,6 +83,7 @@ class Login_e_Operacoes:
             print('Opção inválida.')
 
     def adcsaldo_cartao(self, valor):
+        print()
         print('Pagamento com cartão de crédito selecionado.')
         numero_cartao = input('Digite o número do cartão: ')
         nome_titular = input('Digite o nome do titular do cartão: ')
@@ -83,21 +96,22 @@ class Login_e_Operacoes:
         print('Pagamento realizado com sucesso!\n')
 
     def adcsaldo_pix(self, valor):
+        print()
         print('Pagamento com PIX selecionado.')
-        print(f'Envie PIX de R${valor:.2f} para a seguinte chave: pixsaldo@sagasautomoveis.com')
+        print('Gerando chave PIX.', end='')
+        for i in range(2):
+                print('.', end='', flush=True)
+                countdown(1)
+        print(f'\nEnvie PIX de R${valor:.2f} para a seguinte chave: pixsaldo@sagasautomoveis.com')
         input('Após realizar o PIX, pressione Enter para concluir o processo...')
         self.atualizar_saldo2(valor)
         self.salvar_logins('logins.json')
         print('Pagamento via PIX realizado com sucesso!\n')
-    
-    def ver_resumo(self):
-        print('\n--- Resumo das Operações ---')
-        print(f"Total das Movimentações feitas no site neste login: R${self.operacoes['movimetações']:.2f}")
 
     def verificarsaldo(self):
         if self.usuario_logado is not None:
             index_usuario_logado = self.usuarioslist.index(self.usuario_logado)
-            print(f"Saldo em conta: R${self.logins[index_usuario_logado]['saldo']:.2f}")
+            print(f"\nSaldo em conta: R${self.logins[index_usuario_logado]['saldo']:.2f}")
         else:
             print('Você precisa estar logado para verificar o saldo.')
     
@@ -143,10 +157,7 @@ class Login_e_Operacoes:
                 valor_aluguel = carro_comprado.valor * num_dias * (1 - desconto)
 
                 if login_e_operacoes_obj.logins[index_usuario_logado]['saldo'] >= valor_aluguel:
-                    login_e_operacoes_obj.selfcarros.append(carro_comprado)
                     login_e_operacoes_obj.logins[index_usuario_logado]['saldo'] -= valor_aluguel
-                    login_e_operacoes_obj.operacoes['movimetações'] += valor_aluguel
-                    login_e_operacoes_obj.operacoes['total'] = login_e_operacoes_obj.operacoes['movimetações'] - login_e_operacoes_obj.operacoes['ganho']
                     marca_escolhida.carros.pop(escolha_carro - 1)
                     self.salvar_logins('logins.json')
                     print(f'Valor da compra: R${valor_aluguel}')
@@ -158,17 +169,9 @@ class Login_e_Operacoes:
                 print('Escolha inválida.')
         else:
             print('Escolha inválida.')
-
-
-    def atualizar_saldo(self, valor):
-        self.logins[self.index_usuario_logado]['saldo'] += valor
-        self.operacoes['movimetações'] += valor
-        self.operacoes['total'] = self.operacoes['movimetações'] - self.operacoes['ganho']
     
     def atualizar_saldo2(self, valor):
         self.logins[self.index_usuario_logado]['saldo'] += valor
-        self.operacoes['movimetações'] += valor
-        self.operacoes['total'] = self.operacoes['movimetações'] - self.operacoes['ganho']
 
     def salvar_logins(self, nome_arquivo):
         with open(nome_arquivo, 'w') as file:
@@ -182,9 +185,4 @@ class Login_e_Operacoes:
         except FileNotFoundError:
             print("Arquivo de logins não encontrado. Criando um novo.")
         
-class Operacoes:
-    def __init__(self):
-        self.movimetações = 0
-        self.ganho = 0
-        self.total = 0
-        
+

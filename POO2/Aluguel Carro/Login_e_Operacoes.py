@@ -170,6 +170,14 @@ class Login_e_Operacoes:
         else:
             print('Escolha inválida.')
     
+    def get_logins(self, nome_arquivo):
+        try:
+            with open(nome_arquivo, 'r') as file:
+                self.logins = json.load(nome_arquivo)
+                self.usuarioslist = [login['usuario'] for login in self.logins]
+        except FileNotFoundError:
+            print('Arquivo JSON não encontrado')
+    
     def atualizar_saldo2(self, valor):
         self.logins[self.index_usuario_logado]['saldo'] += valor
 
